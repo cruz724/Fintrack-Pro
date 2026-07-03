@@ -1,402 +1,336 @@
-
-
 //* JS code
 
+// * Fetch User
 
-// * Fetch User 
+const loggedUser = JSON.parse(localStorage.getItem("loggedUser"));
 
-let loggedUser = JSON.parse(localStorage.getItem('loggedUser')) || false
-
-//* Authenctication check 
 if (!loggedUser) {
-    window.location.href = 'login.html'
+    window.location.href = "./login.html";
 }
 
-//* Globely Acces variables 
+//* Globely Acces variables
 
-let uName = loggedUser.name.toUpperCase()
-let uCurrency = loggedUser.uCurrency
+let uName = loggedUser.name.toUpperCase();
+let uCurrency = loggedUser.uCurrency;
 let uCurrentBal = loggedUser.uCurrentBal;
-let transactionArray = loggedUser.uTransactions || []
-
+let transactionArray = loggedUser.uTransactions || [];
 
 //edit
 let editTransactionIndex = null;
 
-//chart 
-const chartBox = document.querySelector('#chartBox') 
+//chart
+const chartBox = document.querySelector("#chartBox");
 
+//* Dash Board Variables
 
-//* Dash Board Variables 
-
-/*Render 
+/*Render
  *Current Balence  curBalence
  *Total Income     totalIncome
  *Total Expense    totalExpense
  *Total Transactions   totalTransaction
- * 
+ *
  * */
 
-const curBalenceTag = document.querySelector('#curBalence  h2')
-const totalIncomeTag = document.querySelector('#totalIncome h2')
-const totalExpenseTag = document.querySelector('#totalExpense h2')
-const totalTransactionTag = document.querySelector('#totalTransaction h2')
-
-
-
+const curBalenceTag = document.querySelector("#curBalence  h2");
+const totalIncomeTag = document.querySelector("#totalIncome h2");
+const totalExpenseTag = document.querySelector("#totalExpense h2");
+const totalTransactionTag = document.querySelector("#totalTransaction h2");
 
 //All Transaction Container
-const allTransactionContainer = document.querySelector('.allTransactionContainer')
+const allTransactionContainer = document.querySelector(
+  ".allTransactionContainer",
+);
 
+//Add Transactions Inputs Tags Global Defines variables
 
-//Add Transactions Inputs Tags Global Defines variables 
+// Button  and Form,
 
-
-// Button  and Form, 
-
-const addTrasactinBtn = document.querySelector('#addTrasactin')
-const transactioInputBox = document.querySelector('.transactioInputBox')
-const crossBtn = document.querySelector('.crossBtn')
-const transactionForm = document.querySelector('.transactioInputBox form')
+const addTrasactinBtn = document.querySelector("#addTrasactin");
+const transactioInputBox = document.querySelector(".transactioInputBox");
+const crossBtn = document.querySelector(".crossBtn");
+const transactionForm = document.querySelector(".transactioInputBox form");
 
 //Inuput
-const typeInp = document.querySelector('#typeOfTransction')
-const descInp = document.querySelector('#descInp')
-const amountInp = document.querySelector('#amountInp')
-const dateInp = document.querySelector('#dateInp')
-const categaroyInp = document.querySelector('#categaroyInp')
+const typeInp = document.querySelector("#typeOfTransction");
+const descInp = document.querySelector("#descInp");
+const amountInp = document.querySelector("#amountInp");
+const dateInp = document.querySelector("#dateInp");
+const categaroyInp = document.querySelector("#categaroyInp");
 
+// Setting Board Input Tags
+const updateNameInp = document.querySelector(".uName #name");
+const updateCurrencyInp = document.querySelector(".uCurrency #currency");
 
-
-// Setting Board Input Tags 
-const updateNameInp = document.querySelector('.uName #name')
-const updateCurrencyInp = document.querySelector('.uCurrency #currency')
-
-
-
-//* Logout Function 
+//* Logout Function
 
 const logoutFuction = function () {
-    const logOutBtn = document.querySelector('#logOutBtn')
-    logOutBtn.addEventListener('click', () => {
-        let res = confirm`Are You Want to Log out `
-        if (res) {
-            localStorage.removeItem('loggedUser')
-            window.location.href = 'login.html'
-
-        }
-        return
-    })
-}
+  const logOutBtn = document.querySelector("#logOutBtn");
+  logOutBtn.addEventListener("click", () => {
+    let res = confirm("Are you sure you want to log out?");
+    if (res) {
+      localStorage.removeItem("loggedUser");
+      window.location.href = "./login.html";
+    }
+    return;
+  });
+};
 
 //* dashboard and settings
 
 const dashBoardAndSettingOpenFunction = function () {
+  const dashBtn = document.querySelector("#dashBtn");
+  const setBtn = document.querySelector("#setBtn");
+  const dashboard = document.querySelector(".dashboard");
+  const setting = document.querySelector(".setting");
 
-    const dashBtn = document.querySelector('#dashBtn')
-    const setBtn = document.querySelector('#setBtn')
-    const dashboard = document.querySelector('.dashboard')
-    const setting = document.querySelector('.setting')
+  dashBtn.addEventListener("click", () => {
+    setting.style.display = "none";
+    setBtn.style.background = "none";
+    setBtn.style.color = "var(--black)";
 
-    dashBtn.addEventListener('click', () => {
+    dashboard.style.display = "flex";
+    dashBtn.style.background = "var(--lightBlue)";
+    dashBtn.style.color = "var(--darkBlue)";
+  });
 
-        setting.style.display = 'none'
-        setBtn.style.background = 'none'
-        setBtn.style.color = 'var(--black)'
+  setBtn.addEventListener("click", () => {
+    dashboard.style.display = "none";
+    dashBtn.style.background = "none";
+    dashBtn.style.color = "var(--black)";
 
+    setting.style.display = "flex";
+    setBtn.style.background = "var(--lightBlue)";
+    setBtn.style.color = "var(--darkBlue)";
+  });
+};
 
-        dashboard.style.display = 'flex'
-        dashBtn.style.background = 'var(--lightBlue)'
-        dashBtn.style.color = 'var(--darkBlue)'
+//* Setting Board
 
-    })
-
-
-    setBtn.addEventListener('click', () => {
-
-        dashboard.style.display = 'none'
-        dashBtn.style.background = 'none'
-        dashBtn.style.color = 'var(--black)'
-
-        setting.style.display = 'flex'
-        setBtn.style.background = 'var(--lightBlue)'
-        setBtn.style.color = 'var(--darkBlue)'
-
-    })
-
-}
-
-//* Setting Board 
-
-//Save Changes  Fuction 
+//Save Changes  Fuction
 const saveChagesFunction = function () {
+  const saveChangeBtn = document.querySelector("#saveChangeBtn");
+  const saveForm = document.querySelector(".setting form");
 
+  saveForm.addEventListener("submit", (e) => {
+    e.preventDefault();
 
-    const saveChangeBtn = document.querySelector('#saveChangeBtn')
-    const saveForm = document.querySelector('.setting form')
-    
-    saveForm.addEventListener('submit', (e) => {
+    loggedUser.name = updateNameInp.value;
+    loggedUser.uCurrency = updateCurrencyInp.value;
 
-        e.preventDefault()
+    localStorage.setItem("loggedUser", JSON.stringify(loggedUser));
 
-        loggedUser.name = updateNameInp.value
-        loggedUser.uCurrency = updateCurrencyInp.value
+    showProfile();
+    location.reload();
+  });
 
-        localStorage.setItem('loggedUser', JSON.stringify(loggedUser))
+  return "";
+};
 
-        showProfile()
-        location.reload();
-
-    })
-
-
-    return ''
-}
-
-//Show User Name &  Profile 
+//Show User Name &  Profile
 
 const showProfile = function () {
+  const nameTage = document.querySelector(".right h3");
 
-    const nameTage = document.querySelector('.right h3')
+  nameTage.textContent = `${uName}`;
 
-    nameTage.textContent = `${uName}`;
+  updateNameInp.value = uName.toLowerCase();
 
-    updateNameInp.value = uName.toLowerCase();
+  updateCurrencyInp.value = uCurrency;
+};
 
-    updateCurrencyInp.value = uCurrency
+//* Dash Board
 
-}
+// Render Balenc Income Expense TotalTransactions
 
-//* Dash Board 
+const renderUI = function (tType, amount = 0) {
+  /** error
+   *
+   * 1) uCurrent Balenc is not updating
+   * 2) totalExpense is Not Updating ✅
+   * (bs variables ko function ke under define kiya ab hr bar value calculate hongi )
+   * 3) totalIncome is Not updating ✅
+   *
+   */
 
-// Render Balenc Income Expense TotalTransactions 
+  let currentBalenc = 0;
+  let totalTransaction = 0;
+  let totalIncome = 0;
+  let totalExpense = 0;
 
+  totalTransaction = transactionArray.length;
 
-const renderUI = function(tType, amount = 0) {
+  if (tType === "Income") {
+    loggedUser.uCurrentBal += amount;
+  } else if (tType === "Expense") {
+    loggedUser.uCurrentBal -= amount;
+  }
 
-    /** error 
-      * 
-      * 1) uCurrent Balenc is not updating  
-      * 2) totalExpense is Not Updating ✅ 
-      * (bs variables ko function ke under define kiya ab hr bar value calculate hongi )
-      * 3) totalIncome is Not updating ✅
-      * 
-      */
+  localStorage.setItem("loggedUser", JSON.stringify(loggedUser));
 
-    let currentBalenc = 0;
-    let totalTransaction = 0;
-    let totalIncome = 0;
-    let totalExpense = 0;
-
-
-    totalTransaction = transactionArray.length;
-
-    if (tType === 'Income') {
-        loggedUser.uCurrentBal += amount
+  transactionArray.forEach((obj) => {
+    if (obj.type === "Income") {
+      totalIncome += obj.amount;
+    } else if (obj.type === "Expense") {
+      totalExpense += obj.amount;
     }
-    else if (tType === 'Expense') {
-        loggedUser.uCurrentBal -= amount
+  });
 
-    }
+  curBalenceTag.innerHTML = `${loggedUser.uCurrentBal}.00 ${uCurrency}`;
+  totalTransactionTag.textContent = `${totalTransaction}`;
+  totalIncomeTag.textContent = `${totalIncome}.00  ${uCurrency}`;
+  totalExpenseTag.textContent = `${totalExpense}.00 ${uCurrency}`;
 
-    localStorage.setItem('loggedUser', JSON.stringify(loggedUser))
-
-    transactionArray.forEach(obj => {
-        if (obj.type === 'Income') {
-            totalIncome += obj.amount;
-        } else if (obj.type === 'Expense') {
-            totalExpense += obj.amount;
-        }
-
-    })
-
-    curBalenceTag.innerHTML = `${uCurrentBal}.00 ${uCurrency}`
-    totalTransactionTag.textContent = `${totalTransaction}`
-    totalIncomeTag.textContent = `${totalIncome}.00  ${uCurrency}`
-    totalExpenseTag.textContent = `${totalExpense}.00 ${uCurrency}`
-
-    
-    chartRenderUi(totalIncome ,totalExpense) 
-    renderTransactionFunction(transactionArray)
-
-}
-
+  chartRenderUi(totalIncome, totalExpense);
+  renderTransactionFunction(transactionArray);
+};
 
 // Chart Render Funtion
- let newChart =   new Chart(chartBox, {
+let newChart = new Chart(chartBox, {
+  type: "bar",
 
-        type: 'bar',
+  data: {
+    labels: ["Income vs Expense"], //x
 
-        data: {
-            labels: ['Income vs Expense'],  //x 
+    datasets: [
+      {
+        label: "Icome",
+        data: [0], //y
 
-            datasets: [
-                {
-                    label: 'Icome',
-                    data: [0], //y
+        backgroundColor: "#026d2b",
+        borderRadius: "5",
+      },
 
-                    backgroundColor: '#026d2b',
-                    borderRadius: '5'
+      {
+        label: "Expense",
+        data: [0], //y
 
-                },
+        backgroundColor: "#a20000",
+        borderRadius: "5",
+      },
+    ],
+  },
 
-                {
-                    label: 'Expense',
-                    data: [0], //y
+  options: {
+    responsive: true,
 
-                    backgroundColor: '#a20000',
-                    borderRadius: '5'
+    plugins: {
+      legend: {
+        position: "top",
+      },
+    },
 
-                },
-
-
-            ],
-        },
-
-        options: {
-
-            responsive: true,
-
-            plugins: {
-                legend: {
-                    position: 'top'
-                }
-            },
-
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            },
-        },
-    })
-
+    scales: {
+      y: {
+        beginAtZero: true,
+      },
+    },
+  },
+});
 
 // console.log( newChart.data.datasets[0].data[0] ,newChart.data.datasets[1].data[0]);
-    
 
-function chartRenderUi(totalIncome , totalExpense) {
+function chartRenderUi(totalIncome, totalExpense) {
+  // console.log(totalIncome , totalExpense);
 
-    // console.log(totalIncome , totalExpense);
-    
-   newChart.data.datasets[0].data[0] = totalIncome 
-   newChart.data.datasets[1].data[0] = totalExpense 
-
+  newChart.data.datasets[0].data[0] = totalIncome;
+  newChart.data.datasets[1].data[0] = totalExpense;
+  newChart.update();
 }
 
-// Theme  Function 
+// Theme  Function
 
 const themeFunction = function () {
+  const lightBtn = document.querySelector(".light");
+  const darkBtn = document.querySelector(".dark");
+  const mode = document.querySelector(".mode");
+  const logoImg = document.querySelector(".logo");
+  let rootElement = document.documentElement;
+  let themeFlag = localStorage.getItem("themeFlag") || "light";
 
+  function lightToDarkThemeFuntion() {
+    darkBtn.style.display = "none";
+    lightBtn.style.right = "0%";
+    lightBtn.style.left = null;
 
-    const lightBtn = document.querySelector('.light')
-    const darkBtn = document.querySelector('.dark')
-    const mode = document.querySelector('.mode')
-    const logoImg = document.querySelector('.logo')
-    let rootElement = document.documentElement;
-    let themeFlag = (localStorage.getItem('themeFlag')) || 'light'
+    lightBtn.style.display = "flex";
+    mode.style.backgroundColor = "var(--darkBlue)";
 
+    logoImg.style.filter = "invert(1)";
+    rootElement.style.setProperty("--pri", "#111827");
+    rootElement.style.setProperty("--white", "#1f2937");
+    rootElement.style.setProperty("--black", "#fff");
+    rootElement.style.setProperty("--border", "#374151");
+    rootElement.style.setProperty("--darkBlue", "#3b82f6");
 
-    function lightToDarkThemeFuntion() {
+    addTrasactinBtn.style.backgroundColor = "var(--darkBlue)";
+    addTrasactinBtn.style.color = "var(--black)";
+    saveChangeBtn.style.backgroundColor = "var(--darkBlue)";
+    saveChangeBtn.style.color = "var(--black)";
+  }
 
+  function DarkTolightThemeFuntion() {
+    lightBtn.style.display = "none";
+    darkBtn.style.display = "flex";
+    mode.style.backgroundColor = "var(--lightBlue)";
 
-        darkBtn.style.display = 'none'
-        lightBtn.style.right = "0%"
-        lightBtn.style.left = null;
+    logoImg.style.filter = "invert(0)";
+    rootElement.style.setProperty("--pri", "#f8f9fb");
+    rootElement.style.setProperty("--white", "#fff");
+    rootElement.style.setProperty("--black", "#000");
+    rootElement.style.setProperty("--border", "#e5e7eb");
+    rootElement.style.setProperty("--darkBlue", "#1e40af");
 
-        lightBtn.style.display = 'flex'
-        mode.style.backgroundColor = 'var(--darkBlue)'
+    addTrasactinBtn.style.backgroundColor = "var(--black)";
+    addTrasactinBtn.style.color = "var(--white)";
 
-        logoImg.style.filter = 'invert(1)'
-        rootElement.style.setProperty('--pri', '#111827')
-        rootElement.style.setProperty('--white', '#1f2937')
-        rootElement.style.setProperty('--black', '#fff')
-        rootElement.style.setProperty('--border', '#374151')
-        rootElement.style.setProperty('--darkBlue', '#3b82f6')
+    saveChangeBtn.style.backgroundColor = "var(--black)";
+    saveChangeBtn.style.color = "var(--white)";
 
-        addTrasactinBtn.style.backgroundColor = 'var(--darkBlue)'
-        addTrasactinBtn.style.color = 'var(--black)'
-        saveChangeBtn.style.backgroundColor = 'var(--darkBlue)'
-        saveChangeBtn.style.color = 'var(--black)'
+    localStorage.setItem("themeFlag", "light");
+  }
 
-    }
+  if (themeFlag === "light") {
+    DarkTolightThemeFuntion();
+  } else if (themeFlag === "dark") {
+    lightToDarkThemeFuntion();
+  }
 
-    function DarkTolightThemeFuntion() {
+  darkBtn.addEventListener("click", () => {
+    localStorage.setItem("themeFlag", "dark");
+    lightToDarkThemeFuntion();
+  });
 
-        lightBtn.style.display = 'none'
-        darkBtn.style.display = 'flex'
-        mode.style.backgroundColor = 'var(--lightBlue)'
-
-        logoImg.style.filter = 'invert(0)'
-        rootElement.style.setProperty('--pri', '#f8f9fb')
-        rootElement.style.setProperty('--white', '#fff')
-        rootElement.style.setProperty('--black', '#000')
-        rootElement.style.setProperty('--border', '#e5e7eb')
-        rootElement.style.setProperty('--darkBlue', '#1e40af')
-
-
-        addTrasactinBtn.style.backgroundColor = 'var(--black)'
-        addTrasactinBtn.style.color = 'var(--white)'
-
-        saveChangeBtn.style.backgroundColor = 'var(--black)'
-        saveChangeBtn.style.color = 'var(--white)'
-
-        localStorage.setItem('themeFlag', 'light')
-    }
-
-
-    if (themeFlag === 'light') {
-        DarkTolightThemeFuntion()
-
-    } else if (themeFlag === 'dark') {
-        lightToDarkThemeFuntion()
-    }
-
-
-    darkBtn.addEventListener('click', () => {
-
-        localStorage.setItem('themeFlag', 'dark')
-        lightToDarkThemeFuntion()
-    })
-
-    lightBtn.addEventListener('click', () => {
-        localStorage.setItem('themeFlag', 'light')
-        DarkTolightThemeFuntion()
-    })
-
-}
+  lightBtn.addEventListener("click", () => {
+    localStorage.setItem("themeFlag", "light");
+    DarkTolightThemeFuntion();
+  });
+};
 
 // Reset All Data Function
 
 const resetFunction = function () {
+  const resetBtn = document.querySelector("#resetBtn");
 
-    const resetBtn = document.querySelector('#resetBtn')
+  resetBtn.addEventListener("click", () => {
+    let res = confirm("Warning! This will delete all transaction data.");
 
-    resetBtn.addEventListener('click', () => {
+    if (res) {
+      loggedUser.uTransactions = [];
+      loggedUser.uCurrentBal = 0;
+      localStorage.setItem("loggedUser", JSON.stringify(loggedUser));
+      location.reload();
+      return;
+    }
+  });
+};
 
-    let res = confirm`WARNING this will Delete ❌ all Transaction Data  `
-
-        if (res) {
-
-            loggedUser.uTransactions = [];
-            loggedUser.uCurrentBal = 0;
-            localStorage.setItem('loggedUser', JSON.stringify(loggedUser))
-            location.reload();
-            return
-        }
-    })
-}
-
-
-//* Render All Transactions  Function  
+//* Render All Transactions  Function
 
 const renderTransactionFunction = function (array) {
+  allTransactionContainer.innerHTML = "";
 
-    allTransactionContainer.innerHTML = ''
-
-    array.map((obj, index) => {
-
-        allTransactionContainer.innerHTML += `<div class="record">
+  array.map((obj, index) => {
+    allTransactionContainer.innerHTML += `<div class="record">
 
                                 <h5 class="r-date" > ${obj.date} </h5>
 
@@ -408,228 +342,186 @@ const renderTransactionFunction = function (array) {
                                     <i onclick="editHandle(${index})" class="ri-pencil-fill edit"></i>
                                     <i onclick="deleteHandle(${index})" class="ri-delete-bin-6-line delete"></i>
                                 </h5>
-                            </div>        `
-    })
-}
+                            </div>        `;
+  });
+};
 
+//* Eding Transaction Handle Function
 
-//* Eding Transaction Handle Function 
-
-let beforEditType = ''
+let beforEditType = "";
 let beforEditAmout = 0;
 
 const editHandle = function (index) {
+  editTransactionIndex = index;
+  let editTransactionObj = transactionArray[index];
 
-    editTransactionIndex = index
-    let editTransactionObj = transactionArray[index]
+  typeInp.value = editTransactionObj.type;
+  amountInp.value = editTransactionObj.amount;
 
-    typeInp.value = editTransactionObj.type
-    amountInp.value = editTransactionObj.amount 
+  let beforEditType = editTransactionObj.type;
+  beforEditAmout = editTransactionObj.amount;
 
-    let beforEditType = editTransactionObj.type
-    beforEditAmout = editTransactionObj.amount 
+  if (beforEditType === "Income") loggedUser.uCurrentBal -= beforEditAmout;
+  else if (beforEditType === "Expense") {
+    loggedUser.uCurrentBal = Math.abs(loggedUser.uCurrentBal) - beforEditAmout;
+    console.log(uCurrentBal, beforEditType, beforEditAmout);
+  }
 
-    if(beforEditType === 'Income') loggedUser.uCurrentBal  -= beforEditAmout; 
+  descInp.value = editTransactionObj.description;
+  dateInp.value = editTransactionObj.date;
+  categaroyInp.value = editTransactionObj.category;
 
-    else if(beforEditType ==='Expense' ){
+  transactioInputBox.style.display = "flex";
+};
 
-        loggedUser.uCurrentBal  = Math.abs(loggedUser.uCurrentBal )  - beforEditAmout; 
-        console.log(uCurrentBal, beforEditType , beforEditAmout);
-    }
-
-   
-    
-
-    descInp.value = editTransactionObj.description
-    dateInp.value = editTransactionObj.date
-    categaroyInp.value = editTransactionObj.category  
-
-
-
-    transactioInputBox.style.display = 'flex'
-}
-
-// * Delet Transaction Handle Function 
+// * Delet Transaction Handle Function
 
 const deleteHandle = function (index) {
+  if (!confirm("Are you sure you want to delete this transaction?")) return;
 
-    if (!confirm`Are you sure to delete thi Transcation`) return
+  let deleteObj = transactionArray[index];
 
-    let deleteObj = transactionArray[index]
+  if (deleteObj.type === "Income") {
+    loggedUser.uCurrentBal -= deleteObj.amount;
+  } else if (deleteObj.type === "Expense") {
+    loggedUser.uCurrentBal += deleteObj.amount;
+  }
 
-    if ((deleteObj.type === 'Income')) {
-        loggedUser.uCurrentBal -= deleteObj.amount
+  //*deleting transaction
 
-    } else if (deleteObj.type === 'Expense') {
+  transactionArray.splice(index, 1);
 
-        loggedUser.uCurrentBal += deleteObj.amount
-    }
+  loggedUser.uTransactions = transactionArray;
 
+  localStorage.setItem("loggedUser", JSON.stringify(loggedUser));
 
+  renderTransactionFunction(transactionArray);
 
-    //*deleting transaction 
+  location.reload();
+};
 
-    transactionArray.splice(index, 1)
+//* Add Transaction Board
 
-    loggedUser.uTransactions = transactionArray
-
-
-    localStorage.setItem('loggedUser', JSON.stringify(loggedUser))
-
-    renderTransactionFunction(transactionArray)
-
-    location.reload()
-}
-
-
-
-//* Add Transaction Board  
-
-const addTransactionBoardFunction = function(){
-    
-addTrasactinBtn.addEventListener('click', () => {
-    transactioInputBox.style.display = 'flex'
+const addTransactionBoardFunction = function () {
+  addTrasactinBtn.addEventListener("click", () => {
+    transactioInputBox.style.display = "flex";
     dateInp.value = null;
-    
+  });
 
-})
+  crossBtn.addEventListener("click", () => {
+    transactioInputBox.style.display = "none";
+  });
 
-crossBtn.addEventListener('click', () => {
-    transactioInputBox.style.display = 'none'
-})
+  //* Add Transaction Event handler
 
-//* Add Transaction Event handler 
-
-
-transactionForm.addEventListener('submit', (e) => {
-
-    e.preventDefault() 
-    transactioInputBox.style.display = 'none'
-    let type = typeInp.value
-    let description = descInp.value
-    let amount = Number(amountInp.value)
-    let date = dateInp.value
-    let category = categaroyInp.value
-
+  transactionForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    transactioInputBox.style.display = "none";
+    let type = typeInp.value;
+    let description = descInp.value;
+    let amount = Number(amountInp.value);
+    let date = dateInp.value;
+    let category = categaroyInp.value;
 
     if (editTransactionIndex || editTransactionIndex === 0) {
+      transactionArray[editTransactionIndex].type = type;
+      transactionArray[editTransactionIndex].description = description;
+      transactionArray[editTransactionIndex].amount = amount;
+      transactionArray[editTransactionIndex].date = date;
+      transactionArray[editTransactionIndex].category = category;
 
-        transactionArray[editTransactionIndex].type = type;
-        transactionArray[editTransactionIndex].description = description;
-        transactionArray[editTransactionIndex].amount = amount;
-        transactionArray[editTransactionIndex].date = date;
-        transactionArray[editTransactionIndex].category = category;
+      localStorage.setItem("loggedUser", JSON.stringify(loggedUser));
+      transactionForm.reset();
 
-        localStorage.setItem('loggedUser', JSON.stringify(loggedUser))
-        transactionForm.reset()
+      location.reload();
 
-        location.reload();
-
-        renderUI(type , amount)
-
+      renderUI(type, amount);
     } else {
+      let newtransction = {
+        type,
+        description,
+        amount,
+        date,
+        category,
+      };
 
-        let newtransction = {
-            type,
-            description,
-            amount,
-            date,
-            category
-        }
+      transactionArray.push(newtransction);
 
-        transactionArray.push(newtransction)
+      loggedUser.uTransactions = transactionArray;
 
-        loggedUser.uTransactions = transactionArray
+      localStorage.setItem("loggedUser", JSON.stringify(loggedUser));
 
-        localStorage.setItem('loggedUser', JSON.stringify(loggedUser))
+      transactionForm.reset();
 
-        transactionForm.reset()
+      location.reload();
 
-        location.reload();
-
-        renderUI(type, amount);
-
+      renderUI(type, amount);
     }
-}) 
+  });
+};
 
+//* Search and Filter
 
-}
+const searchAndFilterFuction = function () {
+  const searchInp = document.querySelector("#searchInp");
+  const filterInp = document.querySelector("#filterInp");
 
-//* Search and Filter 
+  searchInp.addEventListener("input", function () {
+    let searchArray = transactionArray.filter((obj) => {
+      return obj.description.toLowerCase().includes(searchInp.value);
+    });
 
-const searchAndFilterFuction = function(){
-        
-    const searchInp = document.querySelector('#searchInp')
-    const filterInp = document.querySelector('#filterInp')
+    renderTransactionFunction(searchArray);
+  });
 
-    searchInp.addEventListener('input', function () {
-        let searchArray = transactionArray.filter((obj) => {
+  filterInp.addEventListener("input", function () {
+    let filterArray = transactionArray.filter(
+      (obj) => obj.type === filterInp.value,
+    );
 
-            return ((obj.description).toLowerCase().includes(searchInp.value))
-        })
+    if (filterArray.length === 0) {
+      renderTransactionFunction(transactionArray);
+    } else renderTransactionFunction(filterArray);
+  });
+};
 
-        renderTransactionFunction(searchArray)
-    })
+//*sidebar and menu Open in Mobile and desktop view
 
+const menuAndSideBarOpenFunction = function () {
+  const sidebar = document.querySelector(".sidebar");
 
-    filterInp.addEventListener('input', function () {
+  const menuIcon = document.querySelector(".mainContent nav .menuIcon i");
 
-        let filterArray = transactionArray.filter((obj) => obj.type === filterInp.value)
+  const closeSidebar = document.querySelector(".sec-1 .sidebar  i");
 
-        if (filterArray.length === 0) {
-            renderTransactionFunction(transactionArray)
-        }
-        else renderTransactionFunction(filterArray)
+  menuIcon.addEventListener("click", () => {
+    sidebar.style.display = "flex";
+  });
+  closeSidebar.addEventListener("click", () => {
+    sidebar.style.display = "none";
+  });
+};
 
-    })
+menuAndSideBarOpenFunction();
 
+showProfile();
 
-}
+logoutFuction();
 
+dashBoardAndSettingOpenFunction();
 
-//*sidebar and menu Open in Mobile and desktop view 
+saveChagesFunction();
 
+renderTransactionFunction(transactionArray);
 
-const menuAndSideBarOpenFunction = function(){
- 
-    
-const sidebar = document.querySelector('.sidebar')
+renderUI();
 
-const menuIcon = document.querySelector('.mainContent nav .menuIcon i')
-
-const closeSidebar = document.querySelector('.sec-1 .sidebar  i')
-
-
-menuIcon.addEventListener('click',()=>{
-       sidebar.style.display = 'flex'
-})
-closeSidebar.addEventListener('click',()=>{
-       sidebar.style.display = 'none'
-})
-
-
-}
-
-menuAndSideBarOpenFunction()
-
-showProfile()
-
-logoutFuction()
-
-dashBoardAndSettingOpenFunction() 
-
-saveChagesFunction()
-
-renderTransactionFunction(transactionArray)
-
-renderUI()
-
-addTransactionBoardFunction()
+addTransactionBoardFunction();
 
 // chartRenderUi(0,0)
 
-themeFunction()
+themeFunction();
 
-resetFunction()
+resetFunction();
 
-searchAndFilterFuction()
+searchAndFilterFuction();

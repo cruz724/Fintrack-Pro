@@ -57,7 +57,7 @@ form.addEventListener('submit',(e)=>{
     localStorage.setItem('loggedUser',JSON.stringify(findedUser))
       form.reset()
       alert `Login Succesfully 🎉` 
-      window.location.href = "index.html"
+      window.location.href = "./index.html"
     
 })
 

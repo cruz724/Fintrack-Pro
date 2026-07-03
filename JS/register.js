@@ -1,74 +1,60 @@
+const form = document.querySelector("form");
 
-
-const form = document.querySelector('form')
-
-const nameInp = document.querySelector('#name')
-const passInp = document.querySelector('#password')
-
+const nameInp = document.querySelector("#name");
+const passInp = document.querySelector("#password");
 
 // console.log(form);
 
-
-let registerUser = JSON.parse(localStorage.getItem("registeredUser")) || [] 
+let registerUser = JSON.parse(localStorage.getItem("registeredUser")) || [];
 
 // console.log(registerUser);
 
-form.addEventListener('submit',(e)=>{
+form.addEventListener("submit", (e) => {
+  e.preventDefault();
+  // let name = e.target[0].value
+  // let password = e.target[1].value
 
-    e.preventDefault();
-    // let name = e.target[0].value
-    // let password = e.target[1].value 
+  let name = nameInp.value.trim();
+  let password = passInp.value;
 
-    let name = nameInp.value.trim();
-    let password = passInp.value;
+  // * handle space name
 
+  if (name === "") {
+    alert`Please Fill Valid Name`;
+    return;
+  }
 
-    // * handle space name 
+  //* check userName already exist
 
-    if(name === ''){
-        alert`Please Fill Valid Name`
-        return
-    }
+  let res = registerUser.find((obj) => {
+    return obj.name === name;
+  });
+  if (res) {
+    alert("Username already exists. Please login.");
+    window.location.href = "./login.html";
+    return;
+  }
+  //   console.log(res);
 
-    //* check userName already exist 
+  // console.log(name , password);
 
-   let res =   registerUser.find((obj)=>{
-                  return obj.name === name
-      })
-      if(res !== undefined){
+  let newUser = {
+    name,
+    password,
+    uCurrency: "₹",
+    uTransactions: [],
+    uCurrentBal: 0,
+  };
 
-        // console.log(res);
-        alert `User Already Exist`
-        return
-      }
-    //   console.log(res);
-      
-    // console.log(name , password);
+  registerUser.push(newUser);
 
-    let newUser = {
-        name,
-        password,
-        "uCurrency":'₹',
-        'uTransactions':[],
-        'uCurrentBal':0,
-       
-    }
+  localStorage.setItem("registeredUser", JSON.stringify(registerUser));
 
-    registerUser.push(newUser) 
+  // console.log(registerUser);
 
-    localStorage.setItem('registeredUser',JSON.stringify(registerUser))
+  form.reset();
+  alert`Register Succesfully 🎉 now u Can log In`;
 
-
-    // console.log(registerUser);
-    
-      form.reset()
-      alert `Register Succesfully 🎉 now u Can log In` 
-      
-      window.location.href = "login.html"
-      return
-})
-
-
-
-
-
+  window.location.href = "./login.html";
+  return;
+});
